@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Celestial Voyages - Experience the Cosmos</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- top buttons -->
+  <div class="top-controls">
+    <button class="auth-button" onclick="alert('Redirect to Sign In / Sign Up page')">Sign In</button>
+    <button class="toggle-button" onclick="toggleTheme()" id="themeIcon">☀️</button>
+  </div>
+
+  <!-- hero section -->
+  <div class="hero">
+    <div class="stars" id="stars"></div>
+    <h1 class="title">Celestial Voyages</h1>
+    <p class="subtitle">Embark on the ultimate adventure beyond Earth's atmosphere. Experience weightlessness, see Earth from space, and make history with our luxurious orbital flights.</p>
+    <a href="#" class="cta-button" id="reserveBtn">Reserve Your Seat</a>
+
+    <!-- features -->
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🌌</div>
+        <h3 class="feature-title">Zero-G Experience</h3>
+        <p class="feature-desc">Float freely in our pressurized cabin and experience true weightlessness.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛰️</div>
+        <h3 class="feature-title">Orbital Views</h3>
+        <p class="feature-desc">Witness 16 sunrises and sunsets each day from our panoramic viewing deck.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3 class="feature-title">Sustainable Space Tourism</h3>
+        <p class="feature-desc">Our reusable spacecraft minimize environmental impact while maximizing adventure.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <p>© 2023 Celestial Voyages. All rights reserved. Not affiliated with NASA or SpaceX.</p>
+  </footer>
+
+  <!-- Reservation Modal -->
+  <div class="modal" id="reserveModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">✖</button>
+      <h2>Reserve Your Seat</h2>
+      <form onsubmit="event.preventDefault();alert('Thank you! We\'ll reach out soon.');closeModal();">
+        <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" placeholder="John Doe" required></div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" placeholder="john@example.com" required></div>
+        <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" placeholder="+1 234 567 890" required></div>
+        <div class="form-group"><label for="notes">Special Requests</label><textarea id="notes" rows="3" placeholder="Let us know"></textarea></div>
+        <button class="submit-btn" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

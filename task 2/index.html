@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cinematic 3D Webpage</title>
+  <!-- Google Fonts - Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Variables for Theme (simplified to dark mode defaults) */
+    :root {
+      --body-bg-start: #0e0e1e;
+      --body-bg-end: #1a0a3a;
+      --text-color: white;
+      --navbar-bg: rgba(26, 26, 47, 0.8);
+      --section-bg-base: rgba(26, 26, 47, 0.25);
+      --section-one-bg: rgba(32, 32, 64, 0.25);
+      --section-two-bg: rgba(48, 48, 80, 0.25);
+      --section-three-bg: rgba(64, 64, 96, 0.25);
+      --section-about-bg: rgba(26, 40, 60, 0.25);
+      --section-contact-bg: rgba(10, 20, 30, 0.25);
+      --section-ai-bg: rgba(50, 20, 40, 0.25); /* New tint for AI section */
+      --accent-color: #0ff; /* Cyan */
+      --accent-glow-color: rgba(0, 255, 255, 0.5);
+      --button-gradient-start: #0ff;
+      --button-gradient-end: #00bfff;
+      --button-shadow-color: rgba(0, 255, 255, 0.4);
+      --button-hover-shadow-color: rgba(0, 255, 255, 0.6);
+      --contact-input-bg: rgba(255, 255, 255, 0.05);
+      --contact-input-border: rgba(0, 255, 255, 0.3);
+      --contact-input-placeholder: rgba(255, 255, 255, 0.6);
+      --footer-bg: #1a1a2f;
+      --footer-text: #aaa;
+
+      /* Three.js Network Colors (fixed to dark mode colors) */
+      --network-point-color: 0xffffff; /* White */
+      --network-line-color: 0x00ffff; /* Cyan */
+    }
+
+    /* Basic Reset & Body Styling */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--body-bg-start), var(--body-bg-end));
+      color: var(--text-color);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    /* Full-page Three.js Canvas for Network Background */
+    #three-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Main Navbar Styling */
+    .navbar {
+      position: fixed;
+      top: -100px;
+      width: 100%;
+      padding: 20px 0;
+      background-color: var(--navbar-bg);
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    .navbar a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 400;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.5s ease;
+    }
+
+    .navbar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* New Top-Corner Navigation Bar Styling */
+    .top-corner-nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1001;
+      background-color: rgba(26, 26, 47, 0.6);
+      backdrop-filter: blur(5px);
+      padding: 10px 15px;
+      border-radius: 10px;
+      display: flex;
+      gap: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .top-corner-nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 400;
+      padding: 3px 8px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, color 0.5s ease;
+    }
+
+    .top-corner-nav a:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: var(--accent-color);
+    }
+
+
+    /* Hero Section Styling */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      perspective: 1200px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 20;
+      padding: 20px;
+      max-width: 800px;
+    }
+
+    .hero-content h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-shadow: 0 0 15px var(--accent-glow-color);
+    }
+
+    .hero-content p {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    /* CSS 3D Cube Styling (only for hero section) */
+    .cube-container {
+      width: 200px;
+      height: 200px;
+      transform-style: preserve-3d;
+      animation: rotateCube 10s infinite linear;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+      z-index: 10;
+    }
+    .cube-face {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: rgba(0, 255, 255, 0.08);
+      border: 2px solid rgba(0, 255, 255, 0.15);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+    }
+    .face-front  { transform: rotateY(  0deg) translateZ(100px); }
+    .face-back   { transform: rotateY(180deg) translateZ(100px); }
+    .face-right  { transform: rotateY( 90deg) translateZ(100px); }
+    .face-left   { transform: rotateY(-90deg) translateZ(100px); }
+    .face-top    { transform: rotateX( 90deg) translateZ(100px); }
+    .face-bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+    @keyframes rotateCube {
+      0%    { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg); }
+      100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg); }
+    }
+
+    /* General Section Styling */
+    .section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      padding: 50px 20px;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateY(50px);
+      text-align: center;
+      position: relative;
+      
+      background: var(--section-bg-base);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      margin: 20px auto;
+      max-width: 90%;
+      box-shadow: 0 0 40px var(--accent-glow-color);
+      border: 1px solid var(--accent-glow-color);
+    }
+
+    /* Specific Section Backgrounds - now just for subtle color tinting */
+    .section-one { background: var(--section-one-bg); }
+    .section-two { background: var(--section-two-bg); }
+    .section-three { background: var(--section-three-bg); }
+    .section-about { background: var(--section-about-bg); }
+    .section-contact { background: var(--section-contact-bg); }
+    .section-ai-insights { background: var(--section-ai-bg); }
+
+
+    .section h2 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: var(--accent-color);
+      position: relative;
+      z-index: 2;
+    }
+
+    .section p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Contact Form Specific Styling */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 500px;
+      margin-top: 30px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 12px;
+      border: 1px solid var(--contact-input-border);
+      border-radius: 8px;
+      background-color: var(--contact-input-bg);
+      color: var(--text-color);
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+    }
+
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px var(--accent-glow-color);
+    }
+
+    /* AI Insight Generator Specific Styling */
+    .ai-input-area {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      max-width: 700px;
+      margin-top: 30px;
+    }
+
+    .ai-input-area textarea {
+      padding: 15px;
+      border: 1px solid var(--contact-input-border);
+      border-radius: 10px;
+      background-color: var(--contact-input-bg);
+      color: var(--text-color);
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .ai-input-area textarea::placeholder {
+      color: var(--contact-input-placeholder);
+    }
+
+    .ai-input-area textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px var(--accent-glow-color);
+    }
+
+    .ai-response-area {
+      margin-top: 30px;
+      padding: 20px;
+      background: var(--section-bg-base);
+      backdrop-filter: blur(8px);
+      border-radius: 15px;
+      border: 1px solid var(--accent-color);
+      box-shadow: 0 0 20px var(--accent-glow-color);
+      min-height: 150px;
+      width: 100%;
+      max-width: 700px;
+      text-align: left;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      display: none;
+    }
+
+    .ai-response-area.visible {
+      display: block;
+    }
+
+    .loading-indicator {
+      margin-top: 20px;
+      color: var(--accent-color);
+      font-size: 1.2rem;
+      display: none;
+    }
+
+    .loading-indicator.visible {
+      display: block;
+    }
+
+    /* Button Styling */
+    button {
+      padding: 15px 35px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: none;
+      background: linear-gradient(45deg, var(--button-gradient-start), var(--button-gradient-end));
+      color: #000;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px var(--button-shadow-color);
+      transition: all 0.3s ease;
+      filter: brightness(1);
+      position: relative;
+      z-index: 2;
+    }
+
+    button:hover {
+      box-shadow: 0 8px 20px var(--button-hover-shadow-color);
+      filter: brightness(1.1);
+    }
+
+    /* Footer Styling */
+    .footer {
+      padding: 40px 20px;
+      background-color: var(--footer-bg);
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--footer-text);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .navbar {
+        gap: 1rem;
+        padding: 15px 0;
+      }
+      .navbar a {
+        font-size: 1rem;
+      }
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      .hero-content p {
+        font-size: 1rem;
+      }
+      .section {
+        font-size: 1.5rem;
+        padding: 30px 15px;
+        margin: 15px auto;
+      }
+      .section h2 {
+        font-size: 2rem;
+      }
+      .section p {
+        font-size: 1rem;
+      }
+      button {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+      .cube-container {
+        width: 150px;
+        height: 150px;
+      }
+      .cube-face {
+        width: 150px;
+        height: 150px;
+      }
+      .face-front  { transform: rotateY(  0deg) translateZ(75px); }
+      .face-back   { transform: rotateY(180deg) translateZ(75px); }
+      .face-right  { transform: rotateY( 90deg) translateZ(75px); }
+      .face-left   { transform: rotateY(-90deg) translateZ(75px); }
+      .face-top    { transform: rotateX( 90deg) translateZ(75px); }
+      .face-bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+      .top-corner-nav {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        gap: 0.8rem;
+      }
+      .top-corner-nav a {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full-page Three.js Canvas for Network Background -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- New Top-Corner Navigation Bar -->
+  <div class="top-corner-nav">
+    <a href="#hero">Home</a>
+    <a href="#about-page">About</a>
+    <a href="#contact-page">Contact</a>
+    <a href="#ai-insights-section">AI Insights</a>
+  </div>
+
+  <div class="navbar">
+    <a href="#hero">Home</a>
+    <a href="#section-one">Features</a>
+    <a href="#section-two">About Us</a>
+    <a href="#section-three">Services</a>
+    <a href="#about-page">About</a>
+    <a href="#contact-page">Contact</a>
+    <a href="#ai-insights-section">AI Insights</a>
+  </div>
+
+  <section id="hero" class="hero-section">
+    <!-- CSS 3D Cube for Hero Section (ONLY HERE) -->
+    <div class="cube-container" aria-hidden="true">
+      <div class="cube-face face-front"></div>
+      <div class="cube-face face-back"></div>
+      <div class="cube-face face-right"></div>
+      <div class="cube-face face-left"></div>
+      <div class="cube-face face-top"></div>
+      <div class="cube-face face-bottom"></div>
+    </div>
+    <div class="hero-content">
+      <h1>Welcome to IIT Bombay Techfest</h1>
+      <p>IIT Bombay Techfest: Experience the future of digital interaction with our cutting-edge 3D visuals and scroll-based animations, designed for a truly immersive journey.</p>
+      <button class="pulse-btn">Explore Our Universe</button>
+    </div>
+  </section>
+
+  <section id="section-one" class="section section-one">
+    <h2>Advanced 3D Visuals</h2>
+    <p>Dive into a world where data comes alive with stunning three-dimensional representations. Our platform transforms complex information into intuitive, interactive experiences.</p>
+  </section>
+
+  <section id="section-two" class="section section-two">
+    <h2>Seamless Scroll Interactions</h2>
+    <p>Navigate effortlessly through rich content with fluid, scroll-triggered animations that guide your eye and enhance your understanding.</p>
+  </section>
+
+  <section id="section-three" class="section section-three">
+    <h2>Intelligent AI Solutions</h2>
+    <p>Leverage the power of artificial intelligence integrated with beautiful design to solve real-world problems and unlock new possibilities.</p>
+  </section>
+
+  <!-- New About Information Section -->
+  <section id="about-page" class="section section-about">
+    <h2>About Celestial AI</h2>
+    <p>We are a pioneering technology company dedicated to pushing the boundaries of artificial intelligence and immersive digital experiences. Our mission is to create intuitive and visually stunning solutions that empower businesses and individuals.</p>
+    <p>Founded in 2025, Celestial AI brings together a team of visionary engineers, designers, and AI specialists committed to innovation and excellence. We believe in a future where technology enhances human potential and creativity.</p>
+  </section>
+
+  <!-- New Contact Information Section -->
+  <section id="contact-page" class="section section-contact">
+    <h2>Get in Touch</h2>
+    <p>Have a question or want to collaborate? Reach out to us!</p>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <input type="text" placeholder="Subject">
+      <textarea rows="5" placeholder="Your Message" required></textarea>
+      <button type="submit" class="pulse-btn">Send Message</button>
+    </form>
+    <p style="margin-top: 30px;">
+      Email: info@celestialai.com<br>
+      Phone: +1 (123) 456-7890<br>
+      Address: 123 Galaxy Way, Nebula City, Space 98765
+    </p>
+  </section>
+
+  <!-- New AI Insights Section -->
+  <section id="ai-insights-section" class="section section-ai-insights">
+    <h2>✨ AI Insight Generator ✨</h2>
+    <p>Ask our Celestial AI anything about future technology, digital trends, or AI's impact, and get an instant insight!</p>
+    <div class="ai-input-area">
+      <textarea id="ai-question-input" placeholder="e.g., What are the ethical implications of advanced AI?"></textarea>
+      <button id="generate-insight-btn" class="pulse-btn">Generate Insight</button>
+      <div id="ai-loading-indicator" class="loading-indicator">Generating insight...</div>
+      <div id="ai-response-output" class="ai-response-area"></div>
+    </div>
+  </section>
+
+  <div id="final-cta" style="text-align: center; padding: 50px;">
+    <button class="pulse-btn">Join Our Newsletter</button>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Celestial AI. All rights reserved.
+  </footer>
+
+  <!-- GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    // Register ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    // --- GSAP Animations ---
+
+    // 1. Navbar Slide-In on Page Load
+    gsap.from(".navbar", {
+      y: -100,
+      duration: 1.2,
+      ease: "power3.out",
+      onComplete: () => {
+        // Add shadow after animation for depth
+        gsap.to(".navbar", {
+          boxShadow: "0 5px 20px rgba(0,0,0,0.5)",
+          duration: 0.5,
+          ease: "power1.out"
+        });
+      }
+    });
+
+    // 2. Hero Section Slow Fade-In
+    gsap.to(".hero-section", {
+      opacity: 1,
+      duration: 1.5,
+      ease: "power2.inOut",
+      delay: 0.5 // Delay after navbar animation starts
+    });
+
+    // 3. Button Hover Pulse (with enhanced glow)
+    const buttons = document.querySelectorAll(".pulse-btn");
+    buttons.forEach(button => {
+      button.addEventListener("mouseenter", () => {
+        gsap.to(button, {
+          scale: 1.05,
+          y: -5, // Slight lift
+          duration: 0.3,
+          ease: "back.out(1.7)", // Bounce easing
+          filter: "brightness(1.1)", // Intensify color slightly
+          boxShadow: "0 8px 20px var(--button-hover-shadow-color)" // Use variable for shadow
+        });
+      });
+      button.addEventListener("mouseleave", () => {
+        gsap.to(button, {
+          scale: 1,
+          y: 0,
+          duration: 0.3,
+          ease: "power1.out",
+          filter: "brightness(1)", // Reset brightness
+          boxShadow: "0 5px 15px var(--button-shadow-color)" // Use variable for shadow
+        });
+      });
+    });
+
+    // 4. Scroll-Triggered Fade-In for ALL Sections (including new ones)
+    gsap.utils.toArray(".section, #final-cta").forEach((section, i) => {
+      gsap.fromTo(section,
+        { opacity: 0, y: 50 }, // Initial state
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: "power2.out",
+          delay: i * 0.2, // Staggered delay for cinematic rhythm
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%", // When top of section hits 80% of viewport
+            end: "bottom top", // When bottom of section leaves viewport
+            toggleActions: "play none none reverse", // Play on enter, reverse on leave
+            // markers: true // Uncomment for debugging ScrollTrigger
+          }
+        }
+      );
+    });
+
+    // --- Three.js 3D Visuals (for network background) ---
+    let scene, camera, renderer, points, lines, pointMaterial, lineMaterial;
+    const numPoints = 150;
+    const connectionDistance = 5;
+    const maxConnectionsPerPoint = 3;
+    const pointSpeed = 0.0005;
+    const pointsArray = [];
+
+    // Function to update network colors (no longer dynamic without toggle)
+    function updateNetworkColors() {
+      // Colors are now fixed to dark mode defaults
+      pointMaterial.color.set(0xffffff); // White points
+      lineMaterial.color.set(0x00ffff); // Cyan lines
+    }
+
+    window.onload = function() {
+      const canvas = document.getElementById('three-canvas');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      const ambientLight = new THREE.AmbientLight(0x404040);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(1, 1, 1).normalize();
+      scene.add(directionalLight);
+
+      // Initialize materials
+      pointMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.08,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+      });
+
+      // Initialize points
+      for (let i = 0; i < numPoints; i++) {
+        const x = (Math.random() - 0.5) * 50;
+        const y = (Math.random() - 0.5) * 50;
+        const z = (Math.random() - 0.5) * 50;
+        pointsArray.push(new THREE.Vector3(x, y, z));
+      }
+
+      const pointPositions = new Float32Array(numPoints * 3);
+      for (let i = 0; i < numPoints; i++) {
+        pointPositions[i * 3] = pointsArray[i].x;
+        pointPositions[i * 3 + 1] = pointsArray[i].y;
+        pointPositions[i * 3 + 2] = pointsArray[i].z;
+      }
+      pointGeom = new THREE.BufferGeometry();
+      pointGeom.setAttribute('position', new THREE.BufferAttribute(pointPositions, 3));
+      points = new THREE.Points(pointGeom, pointMaterial);
+      scene.add(points);
+
+      lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x00ffff,
+        transparent: true,
+        opacity: 0.15,
+        blending: THREE.AdditiveBlending
+      });
+
+      const maxLineVertices = numPoints * maxConnectionsPerPoint * 2 * 3;
+      const linePositions = new Float32Array(maxLineVertices);
+      const lineGeom = new THREE.BufferGeometry();
+      lines = new THREE.LineSegments(lineGeom, lineMaterial);
+      scene.add(lines);
+
+      // Apply initial network colors (now fixed)
+      updateNetworkColors();
+
+      function updateLines() {
+        let lineVertexCount = 0;
+        for (let i = 0; i < numPoints; i++) {
+          let connectionsMade = 0;
+          for (let j = i + 1; j < numPoints; j++) {
+            if (connectionsMade >= maxConnectionsPerPoint) break;
+
+            const dist = pointsArray[i].distanceTo(pointsArray[j]);
+            if (dist < connectionDistance) {
+              linePositions[lineVertexCount++] = pointsArray[i].x;
+              linePositions[lineVertexCount++] = pointsArray[i].y;
+              linePositions[lineVertexCount++] = pointsArray[i].z;
+              linePositions[lineVertexCount++] = pointsArray[j].x;
+              linePositions[lineVertexCount++] = pointsArray[j].y;
+              linePositions[lineVertexCount++] = pointsArray[j].z;
+              connectionsMade++;
+            }
+          }
+        }
+        lineGeom.setAttribute('position', new THREE.BufferAttribute(linePositions.slice(0, lineVertexCount), 3));
+        lineGeom.attributes.position.needsUpdate = true;
+        lineGeom.setDrawRange(0, lineVertexCount / 3);
+      }
+
+      updateLines();
+
+      function animate(time) {
+        requestAnimationFrame(animate);
+
+        for (let i = 0; i < numPoints; i++) {
+          const p = pointsArray[i];
+          p.x += Math.sin(time * pointSpeed + i * 0.1) * 0.005;
+          p.y += Math.cos(time * pointSpeed + i * 0.15) * 0.005;
+          p.z += Math.sin(time * pointSpeed + i * 0.2) * 0.005;
+
+          pointGeom.attributes.position.array[i * 3] = p.x;
+          pointGeom.attributes.position.array[i * 3 + 1] = p.y;
+          pointGeom.attributes.position.array[i * 3 + 2] = p.z;
+        }
+        pointGeom.attributes.position.needsUpdate = true;
+
+        updateLines();
+
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      animate(0);
+    };
+
+    // --- Gemini API Integration Logic ---
+    const aiQuestionInput = document.getElementById('ai-question-input');
+    const generateInsightBtn = document.getElementById('generate-insight-btn');
+    const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
+    const aiResponseOutput = document.getElementById('ai-response-output');
+
+    generateInsightBtn.addEventListener('click', async () => {
+      const prompt = aiQuestionInput.value.trim();
+      if (!prompt) {
+        aiResponseOutput.textContent = "Please enter a question to generate an insight.";
+        aiResponseOutput.classList.add('visible');
+        return;
+      }
+
+      aiResponseOutput.classList.remove('visible');
+      aiLoadingIndicator.classList.add('visible');
+      aiResponseOutput.textContent = ''; // Clear previous response
+
+      try {
+        let chatHistory = [];
+        chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+        const payload = { contents: chatHistory };
+        const apiKey = ""; // Canvas will automatically provide the API key here
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+          const text = result.candidates[0].content.parts[0].text;
+          aiResponseOutput.textContent = text;
+        } else {
+          aiResponseOutput.textContent = "Error: Could not generate insight. Please try again.";
+          console.error("Gemini API response structure unexpected:", result);
+        }
+      } catch (error) {
+        aiResponseOutput.textContent = "Error: Failed to connect to AI. Please check your network or try again later.";
+        console.error("Error calling Gemini API:", error);
+      } finally {
+        aiLoadingIndicator.classList.remove('visible');
+        aiResponseOutput.classList.add('visible');
+      }
+    });
+  </script>
+</body>
+</html>
