@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovate Solutions | Welcome</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gradient-bg">
+        <div class="gradient-bg__blob"></div>
+        <div class="gradient-bg__blob"></div>
+        <div class="gradient-bg__blob"></div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="site-header glass-panel">
+        <div class="header-container">
+            <a href="#home" class="logo">Innovate</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container">
+                <h1 class="fade-in">Crafting Digital Experiences</h1>
+                <p class="fade-in delay-1">We build beautiful, responsive, and accessible websites that help your business grow and connect with your audience.</p>
+                <a href="#contact" class="cta-button fade-in delay-2">Get In Touch</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="glass-panel">
+            <div class="container about-content fade-in">
+                 <h2>Who We Are</h2>
+                 <p>We are a passionate team of developers and designers dedicated to creating user-centric digital solutions. Our philosophy is simple: combine clean code with intuitive design to build products that are not only powerful but also a joy to use for everyone.</p>
+                 <p>Accessibility isn't an afterthought; it's at the core of our process. We believe the web should be open and accessible to all, and we strive to meet the highest standards of inclusive design in every project we undertake.</p>
+            </div>
+        </section>
+        
+        <!-- Services Section -->
+        <section id="services" class="glass-panel">
+            <div class="container fade-in">
+                <h2>Our Services</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.08V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m18 22-3-3 1.5-1.5L21 22Z"/><path d="m16 18 1.5-1.5L22 21"/></svg>
+                        </div>
+                        <h3>Web Design</h3>
+                        <p>Creating stunning, modern designs that are user-friendly and reflect your brand's identity.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </div>
+                        <h3>Web Development</h3>
+                        <p>Building fast, secure, and scalable websites using the latest technologies and best practices.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="icon">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                        </div>
+                        <h3>Accessibility</h3>
+                        <p>Ensuring your website is usable by everyone, regardless of disability, improving reach and compliance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Idea Generator Section -->
+        <section id="ai-ideas" class="glass-panel">
+            <div class="container fade-in">
+                <div class="idea-generator-form">
+                    <h2>✨ AI Project Idea Generator</h2>
+                    <p style="text-align: center; max-width: 50ch; margin: 0 auto 2rem auto;">
+                        Not sure where to start? Describe your project, and let our AI provide some inspiration!
+                    </p>
+
+                    <div class="form-group">
+                        <label for="idea-topic" class="sr-only">Your Project Idea</label>
+                        <input type="text" id="idea-topic" class="form-control" placeholder="e.g., A local bakery, a tech startup, a personal blog" aria-describedby="idea-topic-error">
+                        <span class="error-message" id="idea-topic-error" aria-live="assertive"></span>
+                    </div>
+
+                    <div class="idea-buttons">
+                        <button type="button" class="idea-btn" data-idea-type="design">
+                            <span class="loader" style="display: none;"></span>
+                            Web Design Ideas
+                        </button>
+                        <button type="button" class="idea-btn" data-idea-type="development">
+                            <span class="loader" style="display: none;"></span>
+                            Feature Ideas
+                        </button>
+                        <button type="button" class="idea-btn" data-idea-type="accessibility">
+                             <span class="loader" style="display: none;"></span>
+                            Accessibility Tips
+                        </button>
+                    </div>
+
+                    <div id="idea-results-container" role="status" aria-live="polite">
+                        <!-- AI results will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="glass-panel">
+            <div class="container fade-in">
+                <form class="contact-form" id="contactForm" novalidate>
+                    <h2>Contact Us</h2>
+                    <p style="text-align: center; max-width: 50ch; margin: 0 auto 2rem auto;">Have a project in mind? We'd love to hear from you.</p>
+                    
+                    <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required aria-describedby="name-error" placeholder="John Doe">
+                        <span class="error-message" id="name-error" aria-live="assertive">Please enter your full name.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required aria-describedby="email-error" placeholder="you@example.com">
+                        <span class="error-message" id="email-error" aria-live="assertive">Please enter a valid email address.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-topic">What is your project about?</label>
+                        <input type="text" id="project-topic" name="project-topic" class="form-control" aria-describedby="project-topic-error" placeholder="e.g., A new coffee shop website">
+                        <span class="error-message" id="project-topic-error" aria-live="assertive"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                             <label for="message">Message</label>
+                             <button type="button" id="ai-assistant-btn" class="ai-assistant-btn">
+                                ✨ AI Message Assistant
+                                <span class="loader" style="display: none;"></span>
+                            </button>
+                        </div>
+                        <textarea id="message" name="message" class="form-control" rows="5" required aria-describedby="message-error" placeholder="Tell us about your project... or let our AI help!"></textarea>
+                        <span class="error-message" id="message-error" aria-live="assertive">Please enter your message.</span>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+        <div class="container">
+            <ul class="social-links">
+                <li><a href="#" aria-label="Twitter Profile"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a></li>
+                <li><a href="#" aria-label="LinkedIn Profile"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a></li>
+                <li><a href="#" aria-label="GitHub Profile"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></li>
+            </ul>
+            <p>&copy; 2025 Innovate Solutions. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
+
